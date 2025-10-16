@@ -1,0 +1,55 @@
+dataset:
+  path: /Users/cheyuanyuan/Desktop/Shark_iSSA_py/JWS_VPSdata_2020-2023-wMetadata.csv   # absolute path to your data
+  id_col: Tag_shortName                   # your ID col name
+  time_col: DateTimeUTC                   # your time col name
+  lon_col: Longitude                      # longitude column
+  lat_col: Latitude                       # latitude column
+  sex_col: sex                            # OPTIONAL; remove line if you don’t have sex
+
+covariates:
+  passthrough: [] # remove the brackets to add extra columns
+    # list ANY extra column names (same as in your data) you want carried into the analysis
+    # e.g.,
+    # - DepthData
+    # - TempData
+    # - HPE
+
+regularization:
+  dt_minutes: 10          # the fixed step size (Δt). Use 5–30 min depending on your data resolution.
+
+steps:
+  K_available: 5          # how many “available” steps per used step (start small for tests)
+
+social:
+  radius_m: 300           # how far to look for other sharks (meters) at the step endpoint
+  cone_half_angle_deg: 60 # forward/behind cone half-angle (deg)
+
+fit:
+  # list EXACTLY the variables (columns) you want in the iSSA model
+  # movement controls (recommended): log_l, log_l2, cos_turn
+  # social options: ahead_any, n_forward, behind_any, n_behind, nn_dist, mean_align_fwd, rel_speed_fwd
+  # passthrough numerics: any of your columns above (DepthData, TempData, ...)
+  # e.g. formula: ["log_l","log_l2","cos_turn","ahead_any","n_forward","nn_dist","DepthData","TempData"]
+  formula: ["log_l","log_l2","cos_turn","ahead_any","n_forward","nn_dist","sex_M"]
+
+output:
+  design_csv: outputs/design.csv
+  model_summary: outputs/fit.txt        # written if Python fit runs
+  r_export_csv: outputs/issa_design.csv # written if Python fit can’t run
+  report_html: outputs/report.html      # human-readable report
+
+cleaning:
+  drop_zero_zero: true
+  # bounds: [-80, 30, -60, 50]        # optional [min_lon, min_lat, max_lon, max_lat]
+  max_speed_m_s: 6.0                   # filter impossible speeds
+  max_gap_minutes: 480                 # split segments if gap > 8 h
+  min_points_per_id: 10
+  min_segment_points: 3
+  prefer_low_HPE_on_duplicates: true
+
+output:
+  clean_csv: outputs/cleaned.csv
+  design_csv: outputs/design.csv
+  model_summary: outputs/fit.txt
+  r_export_csv: outputs/issa_design.csv
+  report_html: outputs/report.html
