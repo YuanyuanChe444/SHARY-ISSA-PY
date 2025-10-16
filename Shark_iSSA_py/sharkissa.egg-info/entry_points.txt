@@ -1,0 +1,2 @@
+[console_scripts]
+sharkissa = sharkissa.cli.main:app

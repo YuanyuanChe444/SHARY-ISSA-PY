@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sharkissa"
+version = "0.1.0"
+description = "Integrated Step-Selection (iSSA) pipeline with social covariates for shark telemetry"
+requires-python = ">=3.10"
+dependencies = ["numpy","pandas","scipy","statsmodels","pyproj","typer","pyyaml"]
+
+[project.scripts]
+sharkissa = "sharkissa.cli.main:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sharkissa*"]
+exclude = ["configs*", "tests*", "docs*"]
